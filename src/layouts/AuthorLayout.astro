@@ -1,0 +1,46 @@
+---
+/**
+ * Author page layout bridging author frontmatter to `BaseLayout`.
+ */
+import BaseLayout from './BaseLayout.astro';
+import type { IAuthorFrontmatter } from '../types/content';
+
+interface IAuthorLayoutProps {
+  readonly frontmatter: IAuthorFrontmatter;
+}
+
+const { frontmatter } = Astro.props as IAuthorLayoutProps;
+
+const canonicalPath = `/authors/${frontmatter.slug}`;
+const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).toString() : canonicalPath;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: frontmatter.name,
+  description: frontmatter.bio,
+  url: canonicalUrl,
+  sameAs: Object.values(frontmatter.links ?? {}).filter(Boolean),
+};
+---
+
+<BaseLayout
+  title={frontmatter.name}
+  description={frontmatter.bio}
+  canonicalUrl={canonicalUrl}
+  imageUrl={frontmatter.avatar?.src}
+  jsonLd={jsonLd}
+>
+  <article>
+    <header style="margin-bottom: 16px;">
+      <h1 style="margin: 0 0 6px 0;">{frontmatter.name}</h1>
+      {frontmatter.role || frontmatter.location ? (
+        <p style="margin: 0; color: rgba(255, 255, 255, 0.72);">
+          {[frontmatter.role, frontmatter.location].filter(Boolean).join(' · ')}
+        </p>
+      ) : null}
+    </header>
+    <slot />
+  </article>
+</BaseLayout>
+

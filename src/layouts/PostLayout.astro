@@ -1,0 +1,100 @@
+---
+/**
+ * Blog post layout:
+ * - Wraps content in `BaseLayout`
+ * - Emits Schema.org `BlogPosting` JSON-LD (via `Seo.astro`)
+ */
+import BaseLayout from './BaseLayout.astro';
+import SocialShare from '../components/SocialShare.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import type { IBlogPostFrontmatter } from '../types/content';
+
+interface IPostLayoutProps {
+  readonly frontmatter: IBlogPostFrontmatter;
+}
+
+const { frontmatter } = Astro.props as IPostLayoutProps;
+
+const canonicalPath = `/posts/${frontmatter.slug}`;
+
+const canonicalUrl =
+  frontmatter.canonicalUrl ??
+  (Astro.site ? new URL(canonicalPath, Astro.site).toString() : canonicalPath);
+
+const authorPath = `/authors/${frontmatter.author}`;
+const authorUrl = Astro.site ? new URL(authorPath, Astro.site).toString() : authorPath;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: frontmatter.title,
+  description: frontmatter.description,
+  mainEntityOfPage: canonicalUrl,
+  datePublished: frontmatter.pubDate,
+  dateModified: frontmatter.updatedDate ?? frontmatter.pubDate,
+  author: {
+    '@type': 'Person',
+    url: authorUrl,
+    name: frontmatter.author,
+  },
+  keywords: frontmatter.keywords?.join(', '),
+  image: frontmatter.heroImage?.src ? [frontmatter.heroImage.src] : undefined,
+};
+
+const displayDate = (iso: string) => {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+};
+---
+
+<BaseLayout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  canonicalUrl={canonicalUrl}
+  imageUrl={frontmatter.heroImage?.src}
+  noindex={frontmatter.draft}
+  jsonLd={jsonLd}
+>
+  <article>
+    <header style="margin-bottom: 18px;">
+      <h1 style="margin: 0 0 10px 0; line-height: 1.15;">{frontmatter.title}</h1>
+      <p style="margin: 0; color: rgba(255, 255, 255, 0.72);">
+        <span>
+          By <a href={authorPath}>{frontmatter.author}</a>
+        </span>
+        <span aria-hidden="true"> · </span>
+        <time datetime={frontmatter.pubDate}>{displayDate(frontmatter.pubDate)}</time>
+        {frontmatter.updatedDate ? (
+          <>
+            <span aria-hidden="true"> · </span>
+            <span>Updated {displayDate(frontmatter.updatedDate)}</span>
+          </>
+        ) : null}
+      </p>
+    </header>
+
+    <SocialShare
+      title={frontmatter.title}
+      url={canonicalUrl}
+      description={frontmatter.description}
+    />
+
+    <slot />
+
+    <SocialShare
+      title={frontmatter.title}
+      url={canonicalUrl}
+      description={frontmatter.description}
+    />
+
+    <RelatedPosts
+      currentSlug={frontmatter.slug}
+      currentTags={frontmatter.tags || []}
+    />
+
+    <NewsletterSignup />
+  </article>
+</BaseLayout>
+

@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = [
+  {
+    slug: 'dune-geopolitics-arrakis',
+    title: 'The Geopolitics of Arrakis: Resource Control and Imperialism in Dune',
+    description: 'How Frank Herbert\'s Dune mirrors real-world resource wars, imperial competition, and indigenous resistance.',
+    tags: ['geopolitics', 'sci-fi', 'dune', 'strategy'],
+  },
+  {
+    slug: 'ai-overlords-always-fail',
+    title: 'The Human Element: Why AI Overlords Always Fail in Science Fiction',
+    description: 'From HAL 9000 to Skynet, analyzing the AI alignment problem and human unpredictability.',
+    tags: ['ai', 'sci-fi', 'ethics', 'strategy'],
+  },
+  {
+    slug: 'swarm-warfare-enders-game',
+    title: 'Swarm Tactics and Decentralized Warfare: From Ender\'s Game to Modern Drone Swarms',
+    description: 'How Ender\'s Game predicted modern warfare through swarm tactics and decentralized command.',
+    tags: ['military-strategy', 'sci-fi', 'drones', 'tactics'],
+  },
+  {
+    slug: 'tarkin-doctrine-geopolitics',
+    title: 'The Tarkin Doctrine: Geopolitical Lessons from the Sith Way of War',
+    description: 'Deterrence, asymmetric warfare, and the psychology of power — updated for 2026.',
+    tags: ['geopolitics', 'star-wars', 'strategy'],
+  },
+  {
+    slug: 'modern-drone-glossary',
+    title: 'The Modern Guide to Drone & Autonomous Systems: Beyond the Lingo',
+    description: 'An updated glossary covering FPV, BVLOS, swarms, edge AI, and loitering munitions.',
+    tags: ['drones', 'military-strategy', 'technology'],
+  },
+  {
+    slug: 'scifi-geopolitics-sandbox',
+    title: 'Sci-Fi as a Sandbox for Geopolitics: From Tarkin to The Expanse',
+    description: 'How sci-fi explores resource scarcity, conflict, deterrence, and autonomous sovereignty.',
+    tags: ['geopolitics', 'sci-fi', 'strategy'],
+  },
+  {
+    slug: 'padawan-analysis-star-wars',
+    title: 'A Padawan\'s Analysis: Star Wars Through the Eyes of the Next Generation',
+    description: 'A modernized analysis of Episode IV through the unfiltered reactions of two kids.',
+    tags: ['star-wars', 'culture', 'strategy'],
+  },
+];
+---
+
+<BaseLayout
+  title="Search - Grand Blog Tarkin"
+  description="Search articles on geopolitics, military strategy, and science fiction analysis."
+>
+  <h1 style="margin: 0 0 24px 0;">Search Articles</h1>
+
+  <input
+    type="search"
+    id="search-input"
+    placeholder="Search by title, description, or tags..."
+    style="width: 100%; padding: 12px 16px; font-size: 1rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; color: #fff; margin-bottom: 24px;"
+  />
+
+  <div id="search-results" style="display: flex; flex-direction: column; gap: 20px;"></div>
+
+  <script define:vars={{ posts }}>
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    function searchPosts(query) {
+      if (!query.trim()) {
+        return posts;
+      }
+
+      const lowerQuery = query.toLowerCase();
+      return posts.filter(post => {
+        const titleMatch = post.title.toLowerCase().includes(lowerQuery);
+        const descMatch = post.description.toLowerCase().includes(lowerQuery);
+        const tagMatch = post.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+        return titleMatch || descMatch || tagMatch;
+      });
+    }
+
+    function renderResults(results) {
+      if (results.length === 0) {
+        searchResults.innerHTML = '<p style="color: rgba(255, 255, 255, 0.6);">No articles found.</p>';
+        return;
+      }
+
+      searchResults.innerHTML = results.map(post => `
+        <article style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 20px;">
+          <h2 style="margin: 0 0 8px 0; font-size: 1.25rem;">
+            <a href="/posts/${post.slug}" style="color: #fff; text-decoration: none;">${post.title}</a>
+          </h2>
+          <p style="color: rgba(255, 255, 255, 0.7); margin: 0 0 8px 0;">${post.description}</p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${post.tags.map(tag => `<span style="font-size: 0.85rem; padding: 4px 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; color: rgba(255, 255, 255, 0.8);">${tag}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      const results = searchPosts(e.target.value);
+      renderResults(results);
+    });
+
+    // Initial render
+    renderResults(posts);
+  </script>
+</BaseLayout>

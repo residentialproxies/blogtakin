@@ -1,0 +1,130 @@
+---
+/**
+ * Home page: simple landing + links to migrated posts and author pages.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = [
+  {
+    href: '/posts/dune-geopolitics-arrakis',
+    title: 'The Geopolitics of Arrakis: Resource Control and Imperialism in Dune',
+    description:
+      'How Frank Herbert\'s Dune mirrors real-world resource wars, imperial competition, and indigenous resistance.',
+    date: '2026-02-03',
+  },
+  {
+    href: '/posts/ai-overlords-always-fail',
+    title: 'The Human Element: Why AI Overlords Always Fail in Science Fiction',
+    description:
+      'From HAL 9000 to Skynet, analyzing the AI alignment problem and human unpredictability.',
+    date: '2026-02-03',
+  },
+  {
+    href: '/posts/swarm-warfare-enders-game',
+    title: 'Swarm Tactics and Decentralized Warfare: From Ender\'s Game to Modern Drone Swarms',
+    description:
+      'How Ender\'s Game predicted modern warfare through swarm tactics and decentralized command.',
+    date: '2026-02-03',
+  },
+  {
+    href: '/posts/tarkin-doctrine-geopolitics',
+    title: 'The Tarkin Doctrine: Geopolitical Lessons from the Sith Way of War',
+    description:
+      'Deterrence, asymmetric warfare, and the psychology of power — updated for 2026.',
+    date: '2026-02-03',
+  },
+  {
+    href: '/posts/modern-drone-glossary',
+    title: 'The Modern Guide to Drone & Autonomous Systems: Beyond the Lingo',
+    description:
+      'An updated glossary covering FPV, BVLOS, swarms, edge AI, and loitering munitions.',
+    date: '2026-02-03',
+  },
+  {
+    href: '/posts/scifi-geopolitics-sandbox',
+    title: 'Sci-Fi as a Sandbox for Geopolitics: From Tarkin to The Expanse',
+    description:
+      'How sci-fi explores resource scarcity, conflict, deterrence, and autonomous sovereignty.',
+    date: '2026-02-03',
+  },
+  {
+    href: '/posts/padawan-analysis-star-wars',
+    title: 'A Padawan\'s Analysis: Star Wars Through the Eyes of the Next Generation',
+    description:
+      'A modernized analysis of Episode IV through the unfiltered reactions of two kids.',
+    date: '2026-02-03',
+  },
+] as const;
+
+const authors = [
+  { href: '/authors/aelkus', name: 'aelkus' },
+  { href: '/authors/vivienne-raper', name: 'vivienne-raper' },
+] as const;
+---
+
+<BaseLayout
+  title="Grand Blog Tarkin - Poli-Sci-Fi: Where Geopolitics Meets Science Fiction"
+  description="In-depth analysis of geopolitics, military strategy, and technology through the lens of science fiction. From Dune to The Expanse, exploring the future of warfare and power."
+>
+  <header style="margin-bottom: 32px;">
+    <h1 style="margin: 0 0 12px 0; font-size: 2.5rem;">Grand Blog Tarkin</h1>
+    <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.15rem; margin: 0 0 8px 0; line-height: 1.5;">
+      Where geopolitics meets science fiction. Deep analysis of power, strategy, and technology through the lens of Dune, Star Wars, The Expanse, and more.
+    </p>
+    <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.95rem; margin: 0 0 12px 0;">
+      7 articles exploring resource wars, AI ethics, swarm warfare, and the future of conflict.
+    </p>
+    <a href="/search" style="display: inline-block; padding: 8px 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; color: #fff; text-decoration: none; font-size: 0.95rem;">🔍 Search Articles</a>
+  </header>
+
+  <section style="margin-bottom: 48px;">
+    <h2 style="margin: 0 0 20px 0; font-size: 1.75rem;">Latest Articles</h2>
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      {posts.map((p) => (
+        <article style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 20px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'; this.style.borderColor='rgba(255, 255, 255, 0.1)'">
+          <h3 style="margin: 0 0 8px 0; font-size: 1.25rem; line-height: 1.3;">
+            <a href={p.href} style="color: #fff; text-decoration: none;">{p.title}</a>
+          </h3>
+          <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.95rem; margin: 0 0 8px 0; line-height: 1.5;">
+            {p.description}
+          </p>
+          <time style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem;" datetime={p.date}>
+            {new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section style="margin-bottom: 48px;">
+    <h2 style="margin: 0 0 16px 0; font-size: 1.5rem;">About This Blog</h2>
+    <p style="color: rgba(255, 255, 255, 0.72); line-height: 1.6; margin: 0 0 12px 0;">
+      Grand Blog Tarkin explores the intersection of geopolitics and science fiction—what we call "Poli-Sci-Fi."
+      We analyze how fictional universes like Dune, Star Wars, and The Expanse illuminate real-world issues of power,
+      strategy, and technological change.
+    </p>
+    <p style="color: rgba(255, 255, 255, 0.72); line-height: 1.6; margin: 0;">
+      Originally founded in 2012, the blog has been revived with modern analysis of deterrence theory, autonomous weapons,
+      AI ethics, and the future of warfare. High-value backlinks from WIRED, MDN, and Popular Science preserved.
+    </p>
+  </section>
+
+  <section style="margin-bottom: 32px;">
+    <h2 style="margin: 0 0 12px 0; font-size: 1.5rem;">Authors</h2>
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 16px;">
+      {authors.map((a) => (
+        <li style="margin: 0;">
+          <a href={a.href} style="display: inline-block; padding: 8px 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 4px; color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: all 0.2s;">{a.name}</a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section style="margin-bottom: 32px;">
+    <h2 style="margin: 0 0 12px 0; font-size: 1.5rem;">Subscribe</h2>
+    <p style="color: rgba(255, 255, 255, 0.72); margin: 0 0 12px 0;">
+      Get new articles via <a href="/rss.xml" style="color: #fff; text-decoration: underline;">RSS feed</a>
+    </p>
+  </section>
+</BaseLayout>
+

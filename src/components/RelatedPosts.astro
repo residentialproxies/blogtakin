@@ -1,0 +1,171 @@
+---
+/**
+ * Related posts component
+ * Shows 3-4 related articles based on tags
+ */
+
+interface Props {
+  currentSlug: string;
+  currentTags: string[];
+  allPosts?: Array<{
+    slug: string;
+    title: string;
+    description: string;
+    tags: string[];
+  }>;
+}
+
+const { currentSlug, currentTags, allPosts } = Astro.props;
+
+// Default posts if not provided
+const defaultPosts = [
+  {
+    slug: 'tarkin-doctrine-geopolitics',
+    title: 'The Tarkin Doctrine: Geopolitical Lessons from the Sith Way of War',
+    description: 'Deterrence, asymmetric warfare, and the psychology of power — updated for 2026.',
+    tags: ['geopolitics', 'star-wars', 'strategy'],
+  },
+  {
+    slug: 'modern-drone-glossary',
+    title: 'The Modern Guide to Drone & Autonomous Systems',
+    description: 'An updated glossary covering FPV, BVLOS, swarms, edge AI, and loitering munitions.',
+    tags: ['drones', 'military-strategy', 'technology'],
+  },
+  {
+    slug: 'scifi-geopolitics-sandbox',
+    title: 'Sci-Fi as a Sandbox for Geopolitics',
+    description: 'How sci-fi explores resource scarcity, conflict, deterrence, and autonomous sovereignty.',
+    tags: ['geopolitics', 'sci-fi', 'strategy'],
+  },
+  {
+    slug: 'padawan-analysis-star-wars',
+    title: "A Padawan's Analysis: Star Wars Through the Eyes of the Next Generation",
+    description: 'A modernized analysis of Episode IV through the unfiltered reactions of two kids.',
+    tags: ['star-wars', 'culture', 'strategy'],
+  },
+  {
+    slug: 'dune-geopolitics-arrakis',
+    title: 'The Geopolitics of Arrakis: Resource Control and Imperialism in Dune',
+    description: 'How Dune mirrors real-world resource wars, imperial competition, and indigenous resistance.',
+    tags: ['geopolitics', 'sci-fi', 'dune', 'strategy'],
+  },
+  {
+    slug: 'ai-overlords-always-fail',
+    title: 'The Human Element: Why AI Overlords Always Fail in Science Fiction',
+    description: 'From HAL 9000 to Skynet, analyzing the AI alignment problem and human unpredictability.',
+    tags: ['ai', 'sci-fi', 'ethics', 'strategy'],
+  },
+  {
+    slug: 'swarm-warfare-enders-game',
+    title: "Swarm Tactics and Decentralized Warfare: From Ender's Game to Modern Drone Swarms",
+    description: "How Ender's Game predicted modern warfare through swarm tactics and decentralized command.",
+    tags: ['military-strategy', 'sci-fi', 'drones', 'tactics'],
+  },
+];
+
+const posts = allPosts || defaultPosts;
+
+// Filter out current post
+const otherPosts = posts.filter(p => p.slug !== currentSlug);
+
+// Calculate relevance score based on tag overlap
+const scoredPosts = otherPosts.map(post => {
+  const commonTags = post.tags.filter(tag => currentTags.includes(tag));
+  return {
+    ...post,
+    score: commonTags.length,
+  };
+});
+
+// Sort by score (descending) and take top 3
+const relatedPosts = scoredPosts
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3);
+
+// If we don't have enough related posts, fill with recent posts
+if (relatedPosts.length < 3) {
+  const remaining = 3 - relatedPosts.length;
+  const recentPosts = otherPosts
+    .filter(p => !relatedPosts.find(rp => rp.slug === p.slug))
+    .slice(0, remaining);
+  relatedPosts.push(...recentPosts.map(p => ({ ...p, score: 0 })));
+}
+---
+
+{relatedPosts.length > 0 && (
+  <aside class="related-posts">
+    <h2>Related Articles</h2>
+    <div class="posts-grid">
+      {relatedPosts.map(post => (
+        <article class="related-post">
+          <h3>
+            <a href={`/posts/${post.slug}`}>{post.title}</a>
+          </h3>
+          <p class="post-description">{post.description}</p>
+        </article>
+      ))}
+    </div>
+  </aside>
+)}
+
+<style>
+  .related-posts {
+    margin: 48px 0 32px 0;
+    padding: 24px 0 0 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .related-posts h2 {
+    margin: 0 0 20px 0;
+    font-size: 1.5rem;
+    color: #fff;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .related-post {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+
+  .related-post:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .related-post h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    line-height: 1.3;
+  }
+
+  .related-post h3 a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .related-post h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .post-description {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

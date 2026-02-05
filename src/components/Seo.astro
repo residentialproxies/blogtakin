@@ -1,0 +1,73 @@
+---
+/**
+ * SEO component for consistent `<head>` meta tags and optional JSON-LD emission.
+ *
+ * Notes:
+ * - `canonicalUrl` is optional; when absent, we derive from `Astro.site` + `Astro.url.pathname`.
+ * - `jsonLd` can be any JSON-serializable value; it will be stringified safely.
+ */
+export interface ISeoProps {
+  readonly title: string;
+  readonly description: string;
+  readonly canonicalUrl?: string;
+  readonly imageUrl?: string;
+  readonly noindex?: boolean;
+  readonly jsonLd?: unknown;
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  imageUrl,
+  noindex = false,
+  jsonLd,
+} = Astro.props as ISeoProps;
+
+const siteName = 'Blogtakin';
+
+const fullTitle = title === siteName ? siteName : `${title} | ${siteName}`;
+
+let resolvedCanonicalUrl: string | undefined;
+
+try {
+  if (canonicalUrl) {
+    resolvedCanonicalUrl = canonicalUrl;
+  } else if (Astro.site) {
+    resolvedCanonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+  }
+} catch {
+  resolvedCanonicalUrl = canonicalUrl;
+}
+
+let jsonLdString: string | undefined;
+
+try {
+  if (jsonLd !== undefined) {
+    jsonLdString = JSON.stringify(jsonLd);
+  }
+} catch {
+  jsonLdString = undefined;
+}
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
+
+{resolvedCanonicalUrl ? <link rel="canonical" href={resolvedCanonicalUrl} /> : null}
+
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+{resolvedCanonicalUrl ? <meta property="og:url" content={resolvedCanonicalUrl} /> : null}
+{imageUrl ? <meta property="og:image" content={imageUrl} /> : null}
+
+<meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{imageUrl ? <meta name="twitter:image" content={imageUrl} /> : null}
+
+{jsonLdString ? (
+  <script type="application/ld+json" is:inline set:html={jsonLdString} />
+) : null}

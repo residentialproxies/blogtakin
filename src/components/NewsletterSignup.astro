@@ -1,0 +1,142 @@
+---
+/**
+ * Newsletter signup component
+ * Collects email addresses for the Grand Blog Tarkin newsletter
+ */
+---
+
+<div class="newsletter-signup">
+  <h3>Join the Poli-Sci-Fi Newsletter</h3>
+  <p class="newsletter-description">
+    Get weekly insights where geopolitics meets science fiction. Analysis, book recommendations, and exclusive content delivered to your inbox.
+  </p>
+
+  <form
+    action="https://buttondown.email/api/emails/embed-subscribe/blogtarkin"
+    method="post"
+    target="_blank"
+    class="newsletter-form"
+  >
+    <div class="form-group">
+      <label for="bd-email" class="visually-hidden">Email address</label>
+      <input
+        type="email"
+        name="email"
+        id="bd-email"
+        placeholder="your@email.com"
+        required
+        class="email-input"
+      />
+      <button type="submit" class="subscribe-button">
+        Subscribe
+      </button>
+    </div>
+    <p class="privacy-note">
+      No spam, ever. Unsubscribe anytime. Privacy-first, no tracking pixels.
+    </p>
+  </form>
+</div>
+
+<style>
+  .newsletter-signup {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 32px 0;
+  }
+
+  .newsletter-signup h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    color: #fff;
+  }
+
+  .newsletter-description {
+    margin: 0 0 16px 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .newsletter-form {
+    margin: 0;
+  }
+
+  .form-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .email-input {
+    flex: 1;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+
+  .email-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .email-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .subscribe-button {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+
+  .subscribe-button:hover {
+    background: #fff;
+  }
+
+  .subscribe-button:active {
+    transform: translateY(1px);
+  }
+
+  .privacy-note {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.4;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  @media (max-width: 600px) {
+    .form-group {
+      flex-direction: column;
+    }
+
+    .subscribe-button {
+      width: 100%;
+    }
+  }
+</style>

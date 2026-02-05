@@ -1,0 +1,147 @@
+---
+/**
+ * Base page layout (site chrome + `<head>` tags).
+ *
+ * This is intentionally lightweight: child layouts (like `PostLayout`) compute
+ * SEO fields and pass them in.
+ */
+import Seo from '../components/Seo.astro';
+
+export interface IBaseLayoutProps {
+  readonly title: string;
+  readonly description: string;
+  readonly canonicalUrl?: string;
+  readonly imageUrl?: string;
+  readonly noindex?: boolean;
+  readonly jsonLd?: unknown;
+}
+
+const { title, description, canonicalUrl, imageUrl, noindex, jsonLd } =
+  Astro.props as IBaseLayoutProps;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Grand Blog Tarkin RSS Feed" href="/rss.xml" />
+    <meta name="generator" content={Astro.generator} />
+    <Seo
+      title={title}
+      description={description}
+      canonicalUrl={canonicalUrl}
+      imageUrl={imageUrl}
+      noindex={noindex}
+      jsonLd={jsonLd}
+    />
+    <slot name="head" />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #0b1020;
+        --panel: rgba(255, 255, 255, 0.08);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.7);
+        --link: #b4d4ff;
+        --max: 860px;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+        line-height: 1.6;
+        background:
+          radial-gradient(1200px 600px at 20% 0%, rgba(84, 174, 255, 0.22), transparent 60%),
+          radial-gradient(900px 500px at 90% 10%, rgba(255, 214, 102, 0.18), transparent 55%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--link);
+      }
+
+      header,
+      main,
+      footer {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        padding-top: 28px;
+        padding-bottom: 18px;
+      }
+
+      header .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      header .brand a {
+        text-decoration: none;
+        color: var(--text);
+        letter-spacing: 0.5px;
+        font-weight: 700;
+      }
+
+      header .tagline {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      main {
+        padding-top: 14px;
+        padding-bottom: 40px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 22px;
+        backdrop-filter: blur(10px);
+      }
+
+      footer {
+        padding-bottom: 28px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 520px) {
+        header {
+          padding-top: 18px;
+        }
+
+        .panel {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <a href="/">Blogtakin</a>
+        <span class="tagline">Geopolitics, sci-fi, and strategy.</span>
+      </div>
+    </header>
+    <main>
+      <div class="panel">
+        <slot />
+      </div>
+    </main>
+    <footer>
+      <p>
+        &copy; {new Date().getFullYear()} Blogtakin. Deployed on Cloudflare Pages.
+      </p>
+    </footer>
+  </body>
+</html>
+

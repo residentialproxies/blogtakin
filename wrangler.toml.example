@@ -1,0 +1,6 @@
+name = "blogtakin"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "dist"
+
+# Set your account_id as an environment variable or replace this line:
+# account_id = "your-account-id-here"
